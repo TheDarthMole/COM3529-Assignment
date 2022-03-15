@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/StaticAnalyser/StaticAnalyser.iml" filepath="$PROJECT_DIR$/StaticAnalyser/StaticAnalyser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/com3529-code.iml" filepath="$PROJECT_DIR$/.idea/com3529-code.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lectures/lectures.iml" filepath="$PROJECT_DIR$/lectures/lectures.iml" />
+      <module fileurl="file://$PROJECT_DIR$/practicals/practicals.iml" filepath="$PROJECT_DIR$/practicals/practicals.iml" />
+    </modules>
+  </component>
+</project>
