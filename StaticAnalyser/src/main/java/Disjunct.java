@@ -81,4 +81,14 @@ public class Disjunct {
         }
     }
 
+    public String toString() {
+        if (this.left == null && this.right == null)
+                return "(" + this.cond.toString() + ") ";
+
+        if (this.right == null)
+            return this.left + this.data;
+
+        return this.left.toString() + this.data + " " + this.right.toString();
+    }
+
 }

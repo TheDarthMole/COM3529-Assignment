@@ -23,14 +23,26 @@ public class Condition {
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
+        String evalString = this.substitute();
+        boolean retValue = (boolean) engine.eval(evalString);
+
+        System.out.println(evalString);
+        System.out.printf("%s : %b\n", evalString, retValue);
+
+        return retValue;
+    }
+
+    public String substitute() {
         String evalString = this.expression;
 
-
-        for (String key: this.varIndex.keySet()) {
+        for (String key: this.varIndex.keySet())
             evalString = evalString.replaceAll(key, String.valueOf(this.varIndex.get(key)));
-        }
 
-        return (boolean) engine.eval(evalString);
+        return evalString;
+    }
+
+    public String toString() {
+        return this.substitute();
     }
 
 }
