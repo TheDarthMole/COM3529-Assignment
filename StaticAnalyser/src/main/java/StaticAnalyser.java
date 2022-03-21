@@ -13,19 +13,18 @@ public class StaticAnalyser {
 
         // Set up the conditions and disjuncts
         Condition c1 = new Condition("side1 + side2 > side3", values);
-        Disjunct d1 = new Disjunct(c1);
+        Disjunct  d1 = new Disjunct(c1);
         Condition c2 = new Condition("side1 == side2 || side2 == side3", values);
-        Disjunct d2 = new Disjunct(c2);
+        Disjunct  d2 = new Disjunct(c2);
         Condition c3 = new Condition("side1 != side2 || side2 != side3", values);
-        Disjunct d3 = new Disjunct(c3);
+        Disjunct  d3 = new Disjunct(c3);
 
         // Setup the main disjuncts
         Disjunct d4 = new Disjunct(d1, "&&", d2);
         Disjunct d5 = new Disjunct(d4, "&&", d3);
 
-//        System.out.println(c1.evaluate());
-
         System.out.println(Disjunct.evalTree(d5));
+        System.out.println(d5);
     }
 
 }
