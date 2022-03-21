@@ -27,7 +27,7 @@ public class Condition {
 
 
         for (String key: this.varIndex.keySet()) {
-            evalString.replaceAll(key, String.valueOf(this.varIndex.get(key)));
+            evalString = evalString.replaceAll(key, String.valueOf(this.varIndex.get(key)));
         }
 
         return (boolean) engine.eval(evalString);

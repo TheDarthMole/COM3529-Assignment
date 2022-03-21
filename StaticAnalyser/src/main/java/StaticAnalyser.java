@@ -7,7 +7,7 @@ public class StaticAnalyser {
     public static void main(String[] args) throws ScriptException {
         // Setup values
         HashMap<String, Integer> values = new HashMap<String, Integer>();
-        values.put("side1", 1);
+        values.put("side1", 5);
         values.put("side2", 2);
         values.put("side3", 3);
 
@@ -23,7 +23,8 @@ public class StaticAnalyser {
         Disjunct d4 = new Disjunct(d1, "&&", d2);
         Disjunct d5 = new Disjunct(d4, "&&", d3);
 
-        StaticAnalyser analyser = new StaticAnalyser();
+//        System.out.println(c1.evaluate());
+
         System.out.println(Disjunct.evalTree(d5));
     }
 
