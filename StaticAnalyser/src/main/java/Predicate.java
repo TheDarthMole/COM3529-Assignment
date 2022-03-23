@@ -1,16 +1,16 @@
 import javax.script.ScriptException;
 
-public class Disjunct {
+public class Predicate {
     String data;
     Condition cond;
-    Disjunct left;
-    Disjunct right;
+    Predicate left;
+    Predicate right;
 
     /**
      * Initialise a raw data point
      * @param cond The current node data
      */
-    Disjunct(Condition cond) {
+    Predicate(Condition cond) {
         this.data = null;
         this.cond = cond;
         this.left = null;
@@ -22,7 +22,7 @@ public class Disjunct {
      * @param left The left node
      * @param data The current node data
      */
-    Disjunct(Disjunct left, String data) {
+    Predicate(Predicate left, String data) {
         this.data = data;
         this.cond = null;
         this.left = left;
@@ -34,7 +34,7 @@ public class Disjunct {
      * @param left The left node
      * @param data The current node data
      */
-    Disjunct(Condition left, String data) {
+    Predicate(Condition left, String data) {
         this.data = data;
         this.cond = left;
         this.left = null;
@@ -47,7 +47,7 @@ public class Disjunct {
      * @param data The current node data
      * @param right The right node
      */
-    Disjunct(Disjunct left, String data, Disjunct right) {
+    Predicate(Predicate left, String data, Predicate right) {
         this.data = data;
         this.left = left;
         this.right = right;
@@ -58,7 +58,7 @@ public class Disjunct {
      * @param root The node to evaluate
      * @return The evaluated data
      */
-    public static boolean evalTree(Disjunct root) throws ScriptException {
+    public static boolean evalTree(Predicate root) throws ScriptException {
         if (root == null)
             return false;
 
@@ -90,5 +90,7 @@ public class Disjunct {
 
         return this.left.toString() + this.data + " " + this.right.toString();
     }
+
+
 
 }
