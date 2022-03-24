@@ -86,6 +86,7 @@ public class Condition {
                 String[] cond1Split = cond1.getValuesFromEquation();
                 String[] cond2Split = cond2.getValuesFromEquation();
 
+
                 // Check equation1 left == equation2 left && equation1 right == equation2 right
                 if ((cond1Split[0].strip().equals(cond2Split[0].strip()) &&
                         cond1Split[1].strip().equals(cond2Split[1].strip())))
@@ -95,14 +96,24 @@ public class Condition {
 
         //
         if ((cond1.expression.contains(">") && cond2.expression.contains("<=")) ||
-                (cond1.expression.contains("<") && cond2.expression.contains(">="))) {
+                (cond1.expression.contains("<") && cond2.expression.contains(">=")) ||
+                (cond1.expression.contains(">=") && (cond2.expression.contains("<"))) ||
+                (cond1.expression.contains("<=") && cond2.expression.contains(">"))) {
             String[] cond1Split = cond1.getValuesFromEquation();
             String[] cond2Split = cond2.getValuesFromEquation();
+            if (cond1Split[0].equals(cond2Split[0]) && cond1Split[1].equals(cond2Split[1]))
+                return true;
 
-//            if (cond1.expression.contains(">") && ) {
-//
-//                return true;
-//            }
+        }
+
+        if ((cond1.expression.contains(">") && cond2.expression.contains("<=")) ||
+                (cond1.expression.contains("<") && cond2.expression.contains(">=")) ||
+                (cond1.expression.contains(">=") && (cond2.expression.contains("<"))) ||
+                (cond1.expression.contains("<=") && cond2.expression.contains(">"))) {
+            String[] cond1Split = cond1.getValuesFromEquation();
+            String[] cond2Split = cond2.getValuesFromEquation();
+            if (cond1Split[0].equals(cond2Split[1]) && cond1Split[1].equals(cond2Split[0]))
+                return true;
         }
         return false;
     }
@@ -113,10 +124,12 @@ public class Condition {
      */
     private String[] getValuesFromEquation() {
         String[] retValue;
-
-        for (String operator : new String[]{"==", "!=", ">", ">=", "<", "<="}) {
-            retValue = this.expression.split(operator);
-            return retValue;
+        String[] operators = {"==", "!=", ">=", ">", "<=", "<"};
+        for (String operator : operators) {
+            if (this.expression.contains(operator)) {
+                retValue = this.expression.split(operator);
+                return retValue;
+            }
         }
         return null;
     }

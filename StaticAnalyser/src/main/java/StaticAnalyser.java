@@ -66,5 +66,19 @@ public class StaticAnalyser {
 
     }
 
+    public boolean equivalenceCheck() {
+        HashMap<String, Integer> values = new HashMap<>();
+        values.put("a", 1);
+        values.put("b", 2);
+
+        Condition c1 = new Condition("a < b", values);
+        Condition c2 = new Condition("a < b", values);
+        Condition c3 = new Condition("a < b", values);
+        Condition c4 = new Condition("a < b", values);
+
+
+        return false;
+    }
+
 }
 
