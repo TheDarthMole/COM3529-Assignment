@@ -98,4 +98,43 @@ class ConditionTest {
         assertEquals(result, true);
     }
 
+    @Test
+    void isEquivalent8() {
+        HashMap<String, Integer> values = new HashMap<>();
+        values.put("a", 1);
+        values.put("b", 2);
+
+        Condition p1 = new Condition("a <= b", values);
+        Condition p2 = new Condition("a <= b", values);
+
+        Boolean result = Condition.isEquivalent(p1, p2);
+        assertEquals(result, true);
+    }
+
+    @Test
+    void isEquivalent9() {
+        HashMap<String, Integer> values = new HashMap<>();
+        values.put("a", 1);
+        values.put("b", 2);
+
+        Condition p1 = new Condition("a >= b", values);
+        Condition p2 = new Condition("a >= b", values);
+
+        Boolean result = Condition.isEquivalent(p1, p2);
+        assertEquals(result, true);
+    }
+
+    @Test
+    void isEquivalent10() {
+        HashMap<String, Integer> values = new HashMap<>();
+        values.put("a", 1);
+        values.put("b", 2);
+
+        Condition p1 = new Condition("a >= a", values);
+        Condition p2 = new Condition("a >= b", values);
+
+        Boolean result = Condition.isEquivalent(p1, p2);
+        assertEquals(result, false);
+    }
+
 }
