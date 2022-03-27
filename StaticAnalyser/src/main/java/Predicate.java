@@ -8,6 +8,7 @@ public class Predicate {
 
     /**
      * Initialise a raw data point
+     *
      * @param cond The current node data
      */
     Predicate(Condition cond) {
@@ -19,6 +20,7 @@ public class Predicate {
 
     /**
      * Initialise a node tree
+     *
      * @param left The left node
      * @param data The current node data
      */
@@ -31,6 +33,7 @@ public class Predicate {
 
     /**
      * Initialise a node tree
+     *
      * @param left The left node
      * @param data The current node data
      */
@@ -43,8 +46,9 @@ public class Predicate {
 
     /**
      * Initialise a node tree
-     * @param left The left node
-     * @param data The current node data
+     *
+     * @param left  The left node
+     * @param data  The current node data
      * @param right The right node
      */
     Predicate(Predicate left, String data, Predicate right) {
@@ -55,6 +59,7 @@ public class Predicate {
 
     /**
      * Recursively evaluate the node
+     *
      * @param root The node to evaluate
      * @return The evaluated data
      */
@@ -68,29 +73,36 @@ public class Predicate {
         boolean left = evalTree(root.left);
         boolean right = evalTree(root.right);
 
-        switch(root.data) {
+        switch (root.data) {
             case "&&":
                 return left && right;
             case "||":
                 return left || right;
             case "!":
-                return ! left;
+                return !left;
             default:
                 // Theoretically not accessible
                 return root.cond.evaluate();
         }
     }
 
-    public String toString() {
-        if (this.left == null && this.right == null)
-                return "(" + this.cond.toString() + ") ";
+    public boolean MCDC() {
 
-        if (this.right == null)
-            return this.left + this.data;
-
-        return this.left.toString() + this.data + " " + this.right.toString();
+        return false;
     }
 
+    public String toString() {
+        // The case for a condition
+        if (this.left == null && this.right == null)
+            return "(" + this.cond.toString() + ") ";
+
+        // The case for !
+        if (this.right == null)
+            return this.data + " " + this.left;
+
+        // The case for || or &&
+        return this.left.toString() + this.data + " " + this.right.toString();
+    }
 
 
 }

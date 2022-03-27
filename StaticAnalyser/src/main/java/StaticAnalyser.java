@@ -63,6 +63,7 @@ public class StaticAnalyser {
 
         // Evaluate the whole thing!
         System.out.println(Predicate.evalTree(p11));
+        System.out.println(p11.toString());
 
     }
 
