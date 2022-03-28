@@ -2,6 +2,7 @@ import javax.script.ScriptException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 public class Predicate {
     String data;
@@ -90,48 +91,36 @@ public class Predicate {
     }
 
     public Integer[] RestrictedMCDC() {
-        Condition[] conditions = this.getConditions(new Condition[] {});
-        ArrayList<Condition> uniqConditions = new ArrayList<>();
-        uniqConditions.add(conditions[0]);
-
-        // Get the unique conditions
-        boolean isUniq;
-        Condition temp;
-
-        // TODO Fix this part, it broken
-
-        for (Condition cond: conditions) {
-            Iterator iterator = uniqConditions.iterator();
-            isUniq = true;
-            while (iterator.hasNext()) {
-                temp = (Condition) iterator.next();
-                System.out.println("Comparing " + temp + " to " + cond);
-                if (Condition.isEquivalent(cond, temp)) {
-                    isUniq = false;
-                    break;
-                }
-                if (isUniq)
-                    uniqConditions.add(cond);
-            }
-//            for (Condition uniqCond: ArrayList.asList(uniqConditions)) {
-//
-//                System.out.println("Compare " + cond.toString() + " to " + inArray.toString());
-//
-//                if ( ! Condition.isEquivalent(cond, inArray)) {
-//                    System.out.println("True");
-//                    uniqConditions.add(cond);
-//                }
-//            }
-            System.out.println(uniqConditions);
-        }
-        System.out.println(uniqConditions.size());
-        System.out.println(conditions.length);
-
+        Condition[] uniqConditions = this.getUniqConditions();
 
         Integer[] retValue = {};
-//        for (Predicate pred : )
 
         return retValue;
+    }
+
+    public Condition[] getUniqConditions() {
+        Condition[] conditions = this.getConditions(new Condition[]{});
+        ArrayList<Condition> uniqConditions = new ArrayList<>();
+        uniqConditions.add(conditions[0]);
+        boolean isUniq;
+        int counter = 0;
+
+        // Get the unique conditions
+        for (Condition cond : conditions) {
+            isUniq = true;
+            counter = 0;
+
+            for (Object conda : uniqConditions.toArray()) {
+                counter++;
+
+                if (Condition.isEquivalent((Condition) conda, cond))
+                    isUniq = false;
+
+                if (isUniq && counter == uniqConditions.size())
+                    uniqConditions.add(cond);
+            }
+        }
+        return (Condition[]) uniqConditions.toArray();
     }
 
     public Condition[] getConditions(Condition[] inputArray) {
