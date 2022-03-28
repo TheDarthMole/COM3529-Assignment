@@ -24,14 +24,19 @@ public class StaticAnalyser {
 
         System.out.println(Predicate.evalTree(d5));
         System.out.println(d5);
+
+        test1();
     }
 
     public static void test1() throws ScriptException {
         // Setup values
         HashMap<String, Integer> values = new HashMap<String, Integer>();
-        values.put("side1", 5);
-        values.put("side2", 2);
-        values.put("side3", 3);
+        values.put("year1", 2020);
+        values.put("year2", 2021);
+        values.put("month1", 1);
+        values.put("month2", 3);
+        values.put("day1", 5);
+        values.put("day2", 15);
 
         // year2 < year1
         Condition c1 = new Condition("year2 < year1", values);
@@ -65,21 +70,11 @@ public class StaticAnalyser {
         System.out.println(Predicate.evalTree(p11));
         System.out.println(p11.toString());
 
+
+        // Get all the conditions for the predicate
+        p11.RestrictedMCDC();
     }
 
-    public boolean equivalenceCheck() {
-        HashMap<String, Integer> values = new HashMap<>();
-        values.put("a", 1);
-        values.put("b", 2);
-
-        Condition c1 = new Condition("a < b", values);
-        Condition c2 = new Condition("a < b", values);
-        Condition c3 = new Condition("a < b", values);
-        Condition c4 = new Condition("a < b", values);
-
-
-        return false;
-    }
 
 }
 
