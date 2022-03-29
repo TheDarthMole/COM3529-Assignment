@@ -133,16 +133,6 @@ public class Condition {
         return null;
     }
 
-    public static HashMap<String, Integer>[] generateComboInputs(HashMap<String, Integer> varIndex) {
-        int numInputs = varIndex.size();
-        int numGenerated = 2 ^ numInputs;
-        HashMap<String, Integer>[] retValue = new HashMap[numGenerated];
 
-        for (int x = 0; x <= numGenerated; x++) {
-            // TODO
-        }
-
-        return retValue;
-    }
 
 }
