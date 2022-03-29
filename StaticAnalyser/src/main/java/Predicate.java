@@ -112,8 +112,12 @@ public class Predicate {
 
     public Integer[] RestrictedMCDC() {
         Condition[] uniqConditions = this.getUniqConditions();
-
         Boolean[][] inputs = generateComboInputs(uniqConditions.length);
+
+//        [[], []]
+//        []
+//        []
+//        []
 
         Integer[] retValue = {};
 
