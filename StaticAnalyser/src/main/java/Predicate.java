@@ -1,8 +1,5 @@
 import javax.script.ScriptException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Predicate {
     String data;
@@ -90,8 +87,33 @@ public class Predicate {
         }
     }
 
+    public static Boolean[][] generateComboInputs(int numInputs) {
+        int numGenerated = (int) Math.pow(2, numInputs) -1;
+        Boolean[][] retValue = new Boolean[numGenerated + 1][numInputs];
+
+        String binaryString;
+        Boolean[] testCase;
+        for (int x = 0; x <= numGenerated; x++) {
+            binaryString = Integer.toBinaryString(x);
+            // pad the string to be the number of inputs long
+            binaryString = "0".repeat(numInputs - binaryString.length()) + binaryString;
+
+            testCase = new Boolean[numInputs];
+            for (int i = 0; i < binaryString.length(); i++) {
+                if (binaryString.charAt(i) == '0')
+                    testCase[i] = false;
+                else
+                    testCase[i] = true;
+            }
+            retValue[x] = testCase;
+        }
+        return retValue;
+    }
+
     public Integer[] RestrictedMCDC() {
         Condition[] uniqConditions = this.getUniqConditions();
+
+        Boolean[][] inputs = generateComboInputs(uniqConditions.length);
 
         Integer[] retValue = {};
 
