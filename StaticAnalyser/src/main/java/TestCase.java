@@ -21,7 +21,7 @@ public class TestCase {
 
         // Replace the conditions with their 'answers' to the conditions
         for (int i = 0; i < inputs.length; i++) {
-            evalString.replaceAll(uniqCond[i].toString(),inputs[i].toString());
+            evalString = evalString.replaceAll(uniqCond[i].toString(),inputs[i].toString());
         }
 
         // Evaluate the expression using the javascript engine, ez
@@ -29,6 +29,8 @@ public class TestCase {
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
         boolean retValue = (boolean) engine.eval(evalString);
+
+        System.out.println("Input: " + evalString + " output: " + retValue);
 
         return retValue;
     }
@@ -62,17 +64,5 @@ public class TestCase {
         return retValue;
     }
 
-//    public HashMap<Boolean[], Boolean> getResults() {
-//
-//        Boolean[][] inputs = this.generateComboInputs(1);
-//
-//        HashMap<Boolean[], Boolean> retValue = new HashMap<>();
-//
-//        for (Boolean[] input : inputs) {
-//
-//        }
-//
-//
-//    }
 
 }

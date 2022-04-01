@@ -71,6 +71,8 @@ public class StaticAnalyser {
         System.out.println(p11.toString());
 
 
+
+        p11.RestrictedMCDC();
         // Get all the conditions for the predicate
 //        p11.RestrictedMCDC();
 

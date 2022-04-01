@@ -137,12 +137,13 @@ public class Predicate {
 
 
             // While we don't have both true and false outputs, try to find new ones by generating them
-            while ((!(hasTrue && hasFalse)) && counter < inputs.length) {
+            while ((!(hasTrue && hasFalse)) && counter < inputs.length - 1) {
 
                 // counter is the index of the expression to evaluate
                 counter++;
+
                 // Create the test case
-                testCase = new TestCase(this, uniqConditions[counter].varIndex);
+                testCase = new TestCase(this, uniqConditions[i].varIndex);
                 // Add the evaluated value to the expressions hashmap
                 output = testCase.evaluateTestCase(inputs[counter]);
                 evaluatedExpressions.put(inputs[counter], output);
@@ -155,20 +156,13 @@ public class Predicate {
                     hasTrue = true;
                 }
             }
-
-
         }
 
+        System.out.println(this);
 
-        // Generate the outputs and add them to the hashmap, evaluatedExpressions
-        for (
-                int i = 0;
-                i < uniqConditions.length; i++) {
-            testCase = new TestCase(this, uniqConditions[i].varIndex);
-            output = testCase.evaluateTestCase(inputs[i]);
-            evaluatedExpressions.put(inputs[i], output);
+        for (Boolean[] key : restrictedMCDCSet.keySet()) {
+            System.out.println("Key: " + Arrays.toString(key) + " output : " + restrictedMCDCSet.get(key));
         }
-
         return restrictedMCDCSet;
     }
 
@@ -194,7 +188,12 @@ public class Predicate {
                     uniqConditions.add(cond);
             }
         }
-        return (Condition[]) uniqConditions.toArray();
+        Condition[] retValue = new Condition[uniqConditions.size()];
+//        Condition[] retValue = (Condition[]) uniqConditions.toArray();
+        for (int i = 0; i < uniqConditions.size(); i++) {
+            retValue[i] = uniqConditions.get(i);
+        }
+        return retValue;
     }
 
     public Condition[] getConditions(Condition[] inputArray) {
