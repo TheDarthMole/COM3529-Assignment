@@ -1,3 +1,5 @@
+import org.junit.Test;
+
 import javax.script.ScriptException;
 import java.util.*;
 
@@ -87,41 +89,87 @@ public class Predicate {
         }
     }
 
-    public static Boolean[][] generateComboInputs(int numInputs) {
-        int numGenerated = (int) Math.pow(2, numInputs) -1;
-        Boolean[][] retValue = new Boolean[numGenerated + 1][numInputs];
 
-        String binaryString;
-        Boolean[] testCase;
-        for (int x = 0; x <= numGenerated; x++) {
-            binaryString = Integer.toBinaryString(x);
-            // pad the string to be the number of inputs long
-            binaryString = "0".repeat(numInputs - binaryString.length()) + binaryString;
-
-            testCase = new Boolean[numInputs];
-            for (int i = 0; i < binaryString.length(); i++) {
-                if (binaryString.charAt(i) == '0')
-                    testCase[i] = false;
-                else
-                    testCase[i] = true;
-            }
-            retValue[x] = testCase;
-        }
-        return retValue;
+    private HashMap<Boolean[], Boolean> calculateNextEvaluatedExpression(int i, HashMap<Boolean[], Boolean> current, Boolean[] inputs) {
+//        TestCase(this)
+        return current;
     }
 
-    public Integer[] RestrictedMCDC() {
+    public HashMap<Boolean[], Boolean> RestrictedMCDC() throws ScriptException {
+        // Get unique conditions, and generate the combination of inputs
         Condition[] uniqConditions = this.getUniqConditions();
-        Boolean[][] inputs = generateComboInputs(uniqConditions.length);
+        Boolean[][] inputs = TestCase.generateComboInputs(uniqConditions.length);
+        HashMap<Boolean[], Boolean> evaluatedExpressions = new HashMap<>();
+        int counter = 0;
+        TestCase testCase = new TestCase(this, uniqConditions[counter].varIndex);
+        evaluatedExpressions.put(inputs[0], testCase.evaluateTestCase(inputs[0]));
+        Boolean output;
+        boolean hasFalse, hasTrue;
+        HashMap<Boolean[], Boolean> restrictedMCDCSet = new HashMap<>();
 
-//        [[], []]
-//        []
-//        []
-//        []
+        // For each major, check to see if there is a condition that satisfies the positive and negative output
+        for (int i = 0; i < uniqConditions.length; i++) {
+            hasTrue = false;
+            hasFalse = false;
 
-        Integer[] retValue = {};
+            // loop over the existing values that we have evaluated to find the true and false output
+            for (Boolean[] key : evaluatedExpressions.keySet()) {
 
-        return retValue;
+                // If we already have both the cases we need, we can quit out of the for loop
+                if (hasTrue && hasFalse)
+                    break;
+
+                if (key[i].equals(true)) {
+                    if (evaluatedExpressions.get(key).equals(true)) {
+                        // If it hasn't already been put in the set for this instance, put it in
+                        if (hasTrue == false)
+                            restrictedMCDCSet.put(key, evaluatedExpressions.get(key));
+                        hasTrue = true;
+                    } else {
+                        // If it hasn't already been put in the set for this instance, put it in
+                        if (hasFalse == false)
+                            restrictedMCDCSet.put(key, evaluatedExpressions.get(key));
+                        hasFalse = true;
+                    }
+                }
+
+            }
+
+
+            // While we don't have both true and false outputs, try to find new ones by generating them
+            while ((!(hasTrue && hasFalse)) && counter < inputs.length) {
+
+                // counter is the index of the expression to evaluate
+                counter++;
+                // Create the test case
+                testCase = new TestCase(this, uniqConditions[counter].varIndex);
+                // Add the evaluated value to the expressions hashmap
+                output = testCase.evaluateTestCase(inputs[counter]);
+                evaluatedExpressions.put(inputs[counter], output);
+
+                if (!hasFalse && output.equals(false)) {
+                    restrictedMCDCSet.put(inputs[counter], false);
+                    hasFalse = true;
+                } else if (!hasTrue && output.equals(true)) {
+                    restrictedMCDCSet.put(inputs[counter], true);
+                    hasTrue = true;
+                }
+            }
+
+
+        }
+
+
+        // Generate the outputs and add them to the hashmap, evaluatedExpressions
+        for (
+                int i = 0;
+                i < uniqConditions.length; i++) {
+            testCase = new TestCase(this, uniqConditions[i].varIndex);
+            output = testCase.evaluateTestCase(inputs[i]);
+            evaluatedExpressions.put(inputs[i], output);
+        }
+
+        return restrictedMCDCSet;
     }
 
     public Condition[] getUniqConditions() {
@@ -169,7 +217,6 @@ public class Predicate {
 
         Condition[] tempRight = new Condition[tempLeft.length + 1];
 
-
         if (this.right != null) {
             right = true;
             if (left)
@@ -187,14 +234,14 @@ public class Predicate {
     public String toString() {
         // The case for a condition
         if (this.left == null && this.right == null)
-            return "(" + this.cond.toString() + ") ";
+            return this.cond.toString();
 
         // The case for !
         if (this.right == null)
-            return this.data + " " + this.left;
+            return "(" + this.data + " " + this.left + ")";
 
         // The case for || or &&
-        return this.left.toString() + this.data + " " + this.right.toString();
+        return "(" + this.left.toString() + ") " + this.data + " (" + this.right.toString() + ")";
     }
 
 

@@ -74,7 +74,7 @@ public class StaticAnalyser {
         // Get all the conditions for the predicate
 //        p11.RestrictedMCDC();
 
-        System.out.println(Predicate.generateComboInputs(values.size()).toString());
+//        System.out.println(Predicate.generateComboInputs(values.size()).toString());
     }
 
 

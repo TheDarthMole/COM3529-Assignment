@@ -27,7 +27,6 @@ public class Condition {
         String evalString = this.substitute();
         boolean retValue = (boolean) engine.eval(evalString);
 
-        System.out.println(evalString);
         System.out.printf("%s : %b\n", evalString, retValue);
 
         return retValue;
