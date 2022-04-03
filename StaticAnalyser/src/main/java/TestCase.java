@@ -30,7 +30,8 @@ public class TestCase {
 
         boolean retValue = (boolean) engine.eval(evalString);
 
-        System.out.println("Input: " + evalString + " output: " + retValue);
+        // For testing, we can see the output of the eval engine
+//        System.out.println("Input: " + evalString + " output: " + retValue);
 
         return retValue;
     }

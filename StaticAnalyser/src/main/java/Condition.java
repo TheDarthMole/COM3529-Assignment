@@ -22,12 +22,12 @@ public class Condition {
     public boolean evaluate() throws ScriptException {
         // Set up the evaluation manager
         ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        ScriptEngine engine = mgr.getEngineByName("Javascript");
 
         String evalString = this.substitute();
         boolean retValue = (boolean) engine.eval(evalString);
 
-        System.out.printf("%s : %b\n", evalString, retValue);
+//        System.out.printf("%s : %b\n", evalString, retValue);
 
         return retValue;
     }
@@ -42,7 +42,7 @@ public class Condition {
     }
 
     public String toString() {
-        return this.substitute();
+        return this.expression;
     }
 
     /**

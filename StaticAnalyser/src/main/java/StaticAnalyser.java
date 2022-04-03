@@ -1,31 +1,14 @@
 import javax.script.ScriptException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class StaticAnalyser {
 
     public static void main(String[] args) throws ScriptException {
-        // Setup values
-        HashMap<String, Integer> values = new HashMap<String, Integer>();
-        values.put("side1", 5);
-        values.put("side2", 2);
-        values.put("side3", 3);
-
-        // Set up the conditions and disjuncts
-        Condition c1 = new Condition("side1 + side2 > side3", values);
-        Predicate d1 = new Predicate(c1);
-        Condition c2 = new Condition("side1 == side2 || side2 == side3", values);
-        Predicate d2 = new Predicate(c2);
-        Condition c3 = new Condition("side1 != side2 || side2 != side3", values);
-        Predicate d3 = new Predicate(c3);
-
-        // Setup the main disjuncts
-        Predicate d4 = new Predicate(d1, "&&", d2);
-        Predicate d5 = new Predicate(d4, "&&", d3);
-
-        System.out.println(Predicate.evalTree(d5));
-        System.out.println(d5);
 
         test1();
+
+//        test2();
     }
 
     public static void test1() throws ScriptException {
@@ -68,15 +51,33 @@ public class StaticAnalyser {
 
         // Evaluate the whole thing!
         System.out.println(Predicate.evalTree(p11));
-        System.out.println(p11.toString());
+        System.out.println(p11);
 
+        p11.correlatedMCDC();
 
+    }
 
-        p11.RestrictedMCDC();
-        // Get all the conditions for the predicate
-//        p11.RestrictedMCDC();
+    public static void test2() throws ScriptException {
+        // Setup values
+        HashMap<String, Integer> values = new HashMap<String, Integer>();
+        values.put("side1", 5);
+        values.put("side2", 2);
+        values.put("side3", 3);
 
-//        System.out.println(Predicate.generateComboInputs(values.size()).toString());
+        // Set up the conditions and disjuncts
+        Condition c1 = new Condition("side1 + side2 > side3", values);
+        Predicate d1 = new Predicate(c1);
+        Condition c2 = new Condition("side1 == side2 || side2 == side3", values);
+        Predicate d2 = new Predicate(c2);
+        Condition c3 = new Condition("side1 != side2 || side2 != side3", values);
+        Predicate d3 = new Predicate(c3);
+
+        // Setup the main disjuncts
+        Predicate d4 = new Predicate(d1, "&&", d2);
+        Predicate d5 = new Predicate(d4, "&&", d3);
+
+        System.out.println(Predicate.evalTree(d5));
+        System.out.println(d5);
     }
 
 

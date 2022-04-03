@@ -1,6 +1,5 @@
-import org.junit.Test;
-
 import javax.script.ScriptException;
+import javax.swing.text.StyledEditorKit;
 import java.util.*;
 
 public class Predicate {
@@ -90,80 +89,90 @@ public class Predicate {
     }
 
 
-    private HashMap<Boolean[], Boolean> calculateNextEvaluatedExpression(int i, HashMap<Boolean[], Boolean> current, Boolean[] inputs) {
-//        TestCase(this)
-        return current;
+    private HashMap<Boolean[], Boolean> findCorrelatedIteration(int index, HashMap<Boolean[], Boolean> evaluatedExpressions) {
+        boolean lastValue, lastKey;
+
+        HashMap<Boolean[], Boolean> mcdcSet = new HashMap<>();
+
+        // loop over the existing values that we have evaluated to find the true and false output
+        for (Boolean[] key : evaluatedExpressions.keySet()) {
+
+            lastValue = evaluatedExpressions.get(key);
+            lastKey = key[index];
+
+            for (Boolean[] key1 : evaluatedExpressions.keySet()) {
+                if (key1[index].equals(!lastKey) && evaluatedExpressions.get(key1).equals(!lastValue)) {
+                    mcdcSet.put(key, lastValue);
+                    mcdcSet.put(key1, evaluatedExpressions.get(key1));
+
+                    return mcdcSet;
+                }
+            }
+        }
+        return null;
     }
 
-    public HashMap<Boolean[], Boolean> RestrictedMCDC() throws ScriptException {
+    public HashMap<Boolean[], Boolean> correlatedMCDC() throws ScriptException {
         // Get unique conditions, and generate the combination of inputs
         Condition[] uniqConditions = this.getUniqConditions();
         Boolean[][] inputs = TestCase.generateComboInputs(uniqConditions.length);
+
+        // Setup hashmaps for storing the sets of inputs to outputs
         HashMap<Boolean[], Boolean> evaluatedExpressions = new HashMap<>();
-        int counter = 0;
-        TestCase testCase = new TestCase(this, uniqConditions[counter].varIndex);
+        HashMap<Boolean[], Boolean> correlatedMCDCSet = new HashMap<>();
+        HashMap<Boolean[],Boolean> tempMCDCSet;
+
+        // Setup stuff for evaluating predicates
+        TestCase testCase = new TestCase(this, uniqConditions[0].varIndex);
         evaluatedExpressions.put(inputs[0], testCase.evaluateTestCase(inputs[0]));
-        Boolean output;
-        boolean hasFalse, hasTrue;
-        HashMap<Boolean[], Boolean> restrictedMCDCSet = new HashMap<>();
 
         // For each major, check to see if there is a condition that satisfies the positive and negative output
         for (int i = 0; i < uniqConditions.length; i++) {
-            hasTrue = false;
-            hasFalse = false;
+            // Check over already evaluated expressions to find an answer
+            tempMCDCSet = findCorrelatedIteration(i, evaluatedExpressions);
+            if (tempMCDCSet != null) {
+                // entries were found, put them in the set
+                for (Boolean[] key : tempMCDCSet.keySet())
+                    correlatedMCDCSet.put(key, tempMCDCSet.get(key));
+            } else {
+                // If there was no answer in the already evaluated set, try to find one
+                for (int j = evaluatedExpressions.size(); j < inputs.length; j++) {
 
-            // loop over the existing values that we have evaluated to find the true and false output
-            for (Boolean[] key : evaluatedExpressions.keySet()) {
-
-                // If we already have both the cases we need, we can quit out of the for loop
-                if (hasTrue && hasFalse)
-                    break;
-
-                if (key[i].equals(true)) {
-                    if (evaluatedExpressions.get(key).equals(true)) {
-                        // If it hasn't already been put in the set for this instance, put it in
-                        if (hasTrue == false)
-                            restrictedMCDCSet.put(key, evaluatedExpressions.get(key));
-                        hasTrue = true;
-                    } else {
-                        // If it hasn't already been put in the set for this instance, put it in
-                        if (hasFalse == false)
-                            restrictedMCDCSet.put(key, evaluatedExpressions.get(key));
-                        hasFalse = true;
+                    // If the evaluated expression was found to have a partner that worked with mcdc then we're good, exit
+                    if (tempMCDCSet != null) {
+                        for (Boolean[] key : tempMCDCSet.keySet())
+                            correlatedMCDCSet.put(key, tempMCDCSet.get(key));
+                        break;
                     }
+
+                    testCase = new TestCase(this, uniqConditions[i].varIndex);
+                    evaluatedExpressions.put(inputs[j], testCase.evaluateTestCase(inputs[j]));
+                    tempMCDCSet = findCorrelatedIteration(i, evaluatedExpressions);
+
                 }
 
             }
 
 
-            // While we don't have both true and false outputs, try to find new ones by generating them
-            while ((!(hasTrue && hasFalse)) && counter < inputs.length - 1) {
-
-                // counter is the index of the expression to evaluate
-                counter++;
-
-                // Create the test case
-                testCase = new TestCase(this, uniqConditions[i].varIndex);
-                // Add the evaluated value to the expressions hashmap
-                output = testCase.evaluateTestCase(inputs[counter]);
-                evaluatedExpressions.put(inputs[counter], output);
-
-                if (!hasFalse && output.equals(false)) {
-                    restrictedMCDCSet.put(inputs[counter], false);
-                    hasFalse = true;
-                } else if (!hasTrue && output.equals(true)) {
-                    restrictedMCDCSet.put(inputs[counter], true);
-                    hasTrue = true;
-                }
-            }
         }
 
+
+        // Display and output stuff
         System.out.println(this);
 
-        for (Boolean[] key : restrictedMCDCSet.keySet()) {
-            System.out.println("Key: " + Arrays.toString(key) + " output : " + restrictedMCDCSet.get(key));
+        System.out.println("Unique conditions, equivalences have been found");
+
+        int counter = 0;
+        for (Condition cond : uniqConditions) {
+            counter++;
+            System.out.println("Condition " + counter + ": (" + cond + ")");
         }
-        return restrictedMCDCSet;
+
+        System.out.println("Correlated MCDC output: ");
+        for (Boolean[] key : correlatedMCDCSet.keySet())
+            System.out.println("Key: " + Arrays.toString(key) + " output : " + correlatedMCDCSet.get(key));
+
+        return correlatedMCDCSet;
     }
 
     public Condition[] getUniqConditions() {
@@ -237,7 +246,7 @@ public class Predicate {
 
         // The case for !
         if (this.right == null)
-            return "(" + this.data + " " + this.left + ")";
+            return "(" + this.data + " " + this.left.toString() + ")";
 
         // The case for || or &&
         return "(" + this.left.toString() + ") " + this.data + " (" + this.right.toString() + ")";
