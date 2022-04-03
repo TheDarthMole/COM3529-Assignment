@@ -87,7 +87,12 @@ public class Predicate {
         }
     }
 
-
+    /**
+     * For one iteration of correlated MCDC, see if there is a pair that satisfies the condition for the major
+     * @param index the major condition index
+     * @param evaluatedExpressions The currently evaluated expressions
+     * @return the two conditions that satisfy the correlated MCDC for a specific major, based on index
+     */
     private HashMap<Boolean[], Boolean> findCorrelatedIteration(int index, HashMap<Boolean[], Boolean> evaluatedExpressions) {
         boolean lastValue, lastKey;
 
@@ -111,6 +116,11 @@ public class Predicate {
         return null;
     }
 
+    /**
+     * Generate Correlated MCDC values for an expression
+     * @return The Correlated MCDC values
+     * @throws ScriptException If there is an error with the input expression
+     */
     public HashMap<Boolean[], Boolean> correlatedMCDC() throws ScriptException {
         // Get unique conditions, and generate the combination of inputs
         Condition[] uniqConditions = this.getUniqConditions();
@@ -169,6 +179,14 @@ public class Predicate {
         return correlatedMCDCSet;
     }
 
+    /**
+     * Evaluates an expression if it's not already been evaluated
+     * @param testCase The test case to use for evaluation
+     * @param input The expression inputs
+     * @param evaluatedExpressions The currently evaluated expressions hashmap
+     * @return The evaluated expression
+     * @throws ScriptException If there is an error with the input expression
+     */
     private boolean evaluatedOrEval(TestCase testCase, Boolean[] input, HashMap<Boolean[], Boolean> evaluatedExpressions) throws ScriptException {
         if (evaluatedExpressions.containsKey(input))
             return evaluatedExpressions.get(input);
@@ -179,6 +197,11 @@ public class Predicate {
         return output;
     }
 
+    /**
+     * Generate Restricted MCDC for an expression
+     * @return The Restricted MCDC test cases
+     * @throws ScriptException If there is an error with the input expression
+     */
     public HashMap<Boolean[], Boolean> restrictedMCDC() throws ScriptException {
         Condition[] uniqConditions = this.getUniqConditions();
         Boolean[][] inputs = TestCase.generateComboInputs(uniqConditions.length);
@@ -223,6 +246,11 @@ public class Predicate {
         return restrictedMCDCSet;
     }
 
+    /**
+     * Gets all of the unique conditions from the expression
+     * Inverse expressions are considered equivalent
+     * @return The list of unique conditions from the expression
+     */
     public Condition[] getUniqConditions() {
         Condition[] conditions = this.getConditions(new Condition[]{});
         ArrayList<Condition> uniqConditions = new ArrayList<>();
@@ -246,13 +274,18 @@ public class Predicate {
             }
         }
         Condition[] retValue = new Condition[uniqConditions.size()];
-//        Condition[] retValue = (Condition[]) uniqConditions.toArray();
+
         for (int i = 0; i < uniqConditions.size(); i++) {
             retValue[i] = uniqConditions.get(i);
         }
         return retValue;
     }
 
+    /**
+     * The complete list of conditions in the expression, a recursive function
+     * @param inputArray The conditions from the function above
+     * @return A full list of conditions for a predicate
+     */
     public Condition[] getConditions(Condition[] inputArray) {
         int n = inputArray.length;
 
@@ -286,6 +319,10 @@ public class Predicate {
             return tempLeft;
     }
 
+    /**
+     * Turn a predicate into a readable string
+     * @return The predicate as a string
+     */
     public String toString() {
         // The case for a condition
         if (this.left == null && this.right == null)
