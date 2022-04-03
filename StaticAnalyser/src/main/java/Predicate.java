@@ -150,16 +150,11 @@ public class Predicate {
                     tempMCDCSet = findCorrelatedIteration(i, evaluatedExpressions);
 
                 }
-
             }
-
-
         }
-
 
         // Display and output stuff
         System.out.println(this);
-
         System.out.println("Unique conditions, equivalences have been found");
 
         int counter = 0;
