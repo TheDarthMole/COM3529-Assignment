@@ -1,5 +1,6 @@
 import javax.script.ScriptException;
 import javax.swing.text.StyledEditorKit;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Predicate {
@@ -120,7 +121,7 @@ public class Predicate {
         // Setup hashmaps for storing the sets of inputs to outputs
         HashMap<Boolean[], Boolean> evaluatedExpressions = new HashMap<>();
         HashMap<Boolean[], Boolean> correlatedMCDCSet = new HashMap<>();
-        HashMap<Boolean[],Boolean> tempMCDCSet;
+        HashMap<Boolean[], Boolean> tempMCDCSet;
 
         // Setup stuff for evaluating predicates
         TestCase testCase = new TestCase(this, uniqConditions[0].varIndex);
@@ -168,6 +169,74 @@ public class Predicate {
             System.out.println("Key: " + Arrays.toString(key) + " output : " + correlatedMCDCSet.get(key));
 
         return correlatedMCDCSet;
+    }
+
+    private HashMap<Boolean[], Boolean> findRestrictedIteration(int index, HashMap<Boolean[], Boolean> evaluatedExpressions) {
+        HashMap<Boolean[], Boolean> mcdcSet = new HashMap<>();
+        boolean lastValue, lastKey;
+
+        for (Boolean[] key : evaluatedExpressions.keySet()) {
+            lastValue = evaluatedExpressions.get(key);
+            lastKey = key[index];
+
+
+        }
+
+        return mcdcSet;
+    }
+
+    private boolean evaluatedOrEval(TestCase testCase, Boolean[] input, HashMap<Boolean[], Boolean> evaluatedExpressions) throws ScriptException {
+        if (evaluatedExpressions.keySet().contains(input))
+            return evaluatedExpressions.get(input);
+
+        boolean output = testCase.evaluateTestCase(input);
+        evaluatedExpressions.put(input, output);
+
+        return output;
+    }
+
+    public HashMap<Boolean[], Boolean> restrictedMCDC() throws ScriptException {
+        Condition[] uniqConditions = this.getUniqConditions();
+        Boolean[][] inputs = TestCase.generateComboInputs(uniqConditions.length);
+
+        // Setup hashmaps for storing the sets of inputs to outputs
+        HashMap<Boolean[], Boolean> evaluatedExpressions = new HashMap<>();
+        HashMap<Boolean[], Boolean> restrictedMCDCSet = new HashMap<>();
+        boolean tempOutput1, tempOutput2, found;
+        Boolean[] majorFlippedInput;
+
+        // For each major, check to see if there is a condition that satisfies the positive and negative output
+        for (int i = 0; i < uniqConditions.length; i++) {
+            found = false;
+            for (int j = 0; j < inputs.length; j++) {
+                if (found)
+                    break;
+
+                // Setup stuff for evaluating predicates
+                TestCase testCase = new TestCase(this, uniqConditions[0].varIndex);
+
+                // toggle the major condition, keep the rest the same
+                majorFlippedInput = inputs[j].clone();
+                majorFlippedInput[i] = !majorFlippedInput[i];
+
+                System.out.println(Arrays.toString(majorFlippedInput) +  Arrays.toString(inputs[j]));
+
+                tempOutput1 = evaluatedOrEval(testCase, inputs[j], evaluatedExpressions);
+                tempOutput2 = evaluatedOrEval(testCase, majorFlippedInput, evaluatedExpressions);
+
+                if (tempOutput1 != tempOutput2) {
+                    found = true;
+                    restrictedMCDCSet.put(inputs[j], tempOutput1);
+                    restrictedMCDCSet.put(majorFlippedInput, tempOutput2);
+                }
+            }
+        }
+
+        System.out.println("Restricted MCDC output: ");
+        for (Boolean[] key : restrictedMCDCSet.keySet())
+            System.out.println("Key: " + Arrays.toString(key) + " output : " + restrictedMCDCSet.get(key));
+
+        return restrictedMCDCSet;
     }
 
     public Condition[] getUniqConditions() {

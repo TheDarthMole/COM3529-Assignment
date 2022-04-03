@@ -53,7 +53,8 @@ public class StaticAnalyser {
         System.out.println(Predicate.evalTree(p11));
         System.out.println(p11);
 
-        p11.correlatedMCDC();
+//        p11.correlatedMCDC();
+        p11.restrictedMCDC();
 
     }
 
