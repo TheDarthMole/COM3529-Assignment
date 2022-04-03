@@ -22,7 +22,7 @@ public class Condition {
     public boolean evaluate() throws ScriptException {
         // Set up the evaluation manager
         ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine engine = mgr.getEngineByName("Javascript");
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
         String evalString = this.substitute();
         boolean retValue = (boolean) engine.eval(evalString);
