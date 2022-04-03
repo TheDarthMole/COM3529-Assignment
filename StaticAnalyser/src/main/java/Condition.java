@@ -19,6 +19,12 @@ public class Condition {
         this.varIndex = varIndex;
     }
 
+    /**
+     * evaluate the expression
+     *
+     * @return returns true or false depending on the expression with the values substituted in
+     * @throws ScriptException
+     */
     public boolean evaluate() throws ScriptException {
         // Set up the evaluation manager
         ScriptEngineManager mgr = new ScriptEngineManager();
@@ -31,6 +37,11 @@ public class Condition {
         return (boolean) engine.eval(evalString);
     }
 
+    /**
+     * Substitute the values into the equation
+     *
+     * @return The expression with the values substituted in
+     */
     public String substitute() {
         String evalString = this.expression;
 
