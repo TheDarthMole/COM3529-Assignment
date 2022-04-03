@@ -1,6 +1,4 @@
 import javax.script.ScriptException;
-import javax.swing.text.StyledEditorKit;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Predicate {
@@ -171,22 +169,8 @@ public class Predicate {
         return correlatedMCDCSet;
     }
 
-    private HashMap<Boolean[], Boolean> findRestrictedIteration(int index, HashMap<Boolean[], Boolean> evaluatedExpressions) {
-        HashMap<Boolean[], Boolean> mcdcSet = new HashMap<>();
-        boolean lastValue, lastKey;
-
-        for (Boolean[] key : evaluatedExpressions.keySet()) {
-            lastValue = evaluatedExpressions.get(key);
-            lastKey = key[index];
-
-
-        }
-
-        return mcdcSet;
-    }
-
     private boolean evaluatedOrEval(TestCase testCase, Boolean[] input, HashMap<Boolean[], Boolean> evaluatedExpressions) throws ScriptException {
-        if (evaluatedExpressions.keySet().contains(input))
+        if (evaluatedExpressions.containsKey(input))
             return evaluatedExpressions.get(input);
 
         boolean output = testCase.evaluateTestCase(input);
@@ -208,7 +192,7 @@ public class Predicate {
         // For each major, check to see if there is a condition that satisfies the positive and negative output
         for (int i = 0; i < uniqConditions.length; i++) {
             found = false;
-            for (int j = 0; j < inputs.length; j++) {
+            for (Boolean[] input : inputs) {
                 if (found)
                     break;
 
@@ -216,17 +200,17 @@ public class Predicate {
                 TestCase testCase = new TestCase(this, uniqConditions[0].varIndex);
 
                 // toggle the major condition, keep the rest the same
-                majorFlippedInput = inputs[j].clone();
+                majorFlippedInput = input.clone();
                 majorFlippedInput[i] = !majorFlippedInput[i];
 
-                System.out.println(Arrays.toString(majorFlippedInput) +  Arrays.toString(inputs[j]));
+                System.out.println(Arrays.toString(majorFlippedInput) + Arrays.toString(input));
 
-                tempOutput1 = evaluatedOrEval(testCase, inputs[j], evaluatedExpressions);
+                tempOutput1 = evaluatedOrEval(testCase, input, evaluatedExpressions);
                 tempOutput2 = evaluatedOrEval(testCase, majorFlippedInput, evaluatedExpressions);
 
                 if (tempOutput1 != tempOutput2) {
                     found = true;
-                    restrictedMCDCSet.put(inputs[j], tempOutput1);
+                    restrictedMCDCSet.put(input, tempOutput1);
                     restrictedMCDCSet.put(majorFlippedInput, tempOutput2);
                 }
             }
@@ -244,7 +228,7 @@ public class Predicate {
         ArrayList<Condition> uniqConditions = new ArrayList<>();
         uniqConditions.add(conditions[0]);
         boolean isUniq;
-        int counter = 0;
+        int counter;
 
         // Get the unique conditions
         for (Condition cond : conditions) {
@@ -274,8 +258,7 @@ public class Predicate {
 
         if (this.left == null && this.right == null) {
             Condition[] retValue = new Condition[n + 1];
-            for (int i = 0; i < n; i++)
-                retValue[i] = inputArray[i];
+            System.arraycopy(inputArray, 0, retValue, 0, n);
             retValue[n] = this.cond;
             return retValue;
         }
@@ -310,10 +293,11 @@ public class Predicate {
 
         // The case for !
         if (this.right == null)
-            return "(" + this.data + " " + this.left.toString() + ")";
+            return "(" + this.data + " " + this.left + ")";
 
         // The case for || or &&
-        return "(" + this.left.toString() + ") " + this.data + " (" + this.right.toString() + ")";
+        assert this.left != null;
+        return "(" + this.left + ") " + this.data + " (" + this.right + ")";
     }
 
 

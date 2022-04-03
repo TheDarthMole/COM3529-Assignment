@@ -1,5 +1,4 @@
 import javax.script.ScriptException;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class StaticAnalyser {
@@ -13,7 +12,7 @@ public class StaticAnalyser {
 
     public static void test1() throws ScriptException {
         // Setup values
-        HashMap<String, Integer> values = new HashMap<String, Integer>();
+        HashMap<String, Integer> values = new HashMap<>();
         values.put("year1", 2020);
         values.put("year2", 2021);
         values.put("month1", 1);
@@ -60,7 +59,7 @@ public class StaticAnalyser {
 
     public static void test2() throws ScriptException {
         // Setup values
-        HashMap<String, Integer> values = new HashMap<String, Integer>();
+        HashMap<String, Integer> values = new HashMap<>();
         values.put("side1", 5);
         values.put("side2", 2);
         values.put("side3", 3);

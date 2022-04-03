@@ -25,11 +25,10 @@ public class Condition {
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
         String evalString = this.substitute();
-        boolean retValue = (boolean) engine.eval(evalString);
 
 //        System.out.printf("%s : %b\n", evalString, retValue);
 
-        return retValue;
+        return (boolean) engine.eval(evalString);
     }
 
     public String substitute() {
@@ -67,6 +66,8 @@ public class Condition {
             String[] cond1Split = cond1.getValuesFromEquation();
             String[] cond2Split = cond2.getValuesFromEquation();
 
+            assert cond1Split != null;
+            assert cond2Split != null;
             String cond1L = cond1Split[0].strip();
             String cond1R = cond1Split[1].strip();
             String cond2L = cond2Split[0].strip();
@@ -86,6 +87,8 @@ public class Condition {
 
 
                 // Check equation1 left == equation2 left && equation1 right == equation2 right
+                assert cond1Split != null;
+                assert cond2Split != null;
                 if ((cond1Split[0].strip().equals(cond2Split[0].strip()) &&
                         cond1Split[1].strip().equals(cond2Split[1].strip())))
                     return true;
@@ -99,6 +102,8 @@ public class Condition {
                 (cond1.expression.contains("<=") && cond2.expression.contains(">"))) {
             String[] cond1Split = cond1.getValuesFromEquation();
             String[] cond2Split = cond2.getValuesFromEquation();
+            assert cond1Split != null;
+            assert cond2Split != null;
             if (cond1Split[0].equals(cond2Split[0]) && cond1Split[1].equals(cond2Split[1]))
                 return true;
 
@@ -110,14 +115,16 @@ public class Condition {
                 (cond1.expression.contains("<=") && cond2.expression.contains(">"))) {
             String[] cond1Split = cond1.getValuesFromEquation();
             String[] cond2Split = cond2.getValuesFromEquation();
-            if (cond1Split[0].equals(cond2Split[1]) && cond1Split[1].equals(cond2Split[0]))
-                return true;
+            assert cond1Split != null;
+            assert cond2Split != null;
+            return cond1Split[0].equals(cond2Split[1]) && cond1Split[1].equals(cond2Split[0]);
         }
         return false;
     }
 
     /**
      * Grabs the values that are stored in .equation and return them as values in a string array
+     *
      * @return An array of the variables from the equation, return[0] is the left, return[1] is the right
      */
     private String[] getValuesFromEquation() {
@@ -131,7 +138,6 @@ public class Condition {
         }
         return null;
     }
-
 
 
 }

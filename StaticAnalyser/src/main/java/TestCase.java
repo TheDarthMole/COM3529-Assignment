@@ -7,7 +7,6 @@ public class TestCase {
 
     Predicate pred;
     HashMap<String, Integer> values;
-    Boolean[] output;
 
     TestCase(Predicate pred, HashMap<String, Integer> values) {
         this.pred = pred;
@@ -16,27 +15,22 @@ public class TestCase {
 
     public Boolean evaluateTestCase(Boolean[] inputs) throws ScriptException {
         String evalString = this.pred.toString();
-        Condition[] uniqCond =  this.pred.getUniqConditions();
+        Condition[] uniqCond = this.pred.getUniqConditions();
 
 
         // Replace the conditions with their 'answers' to the conditions
         for (int i = 0; i < inputs.length; i++) {
-            evalString = evalString.replaceAll(uniqCond[i].toString(),inputs[i].toString());
+            evalString = evalString.replaceAll(uniqCond[i].toString(), inputs[i].toString());
         }
 
         // Evaluate the expression using the javascript engine, ez
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
-        boolean retValue = (boolean) engine.eval(evalString);
-
-        // For testing, we can see the output of the eval engine
-//        System.out.println("Input: " + evalString + " output: " + retValue);
-
-        return retValue;
+        return (boolean) engine.eval(evalString);
     }
 
-    public HashMap<Boolean[], Boolean> getNextEvaluatedCondition(HashMap<Boolean[], Boolean> hashMap, int conditionLength, int evalNumber ) throws ScriptException {
+    public HashMap<Boolean[], Boolean> getNextEvaluatedCondition(HashMap<Boolean[], Boolean> hashMap, int conditionLength, int evalNumber) throws ScriptException {
         Boolean[][] comboInputs = generateComboInputs(conditionLength);
         hashMap.put(comboInputs[evalNumber], evaluateTestCase(comboInputs[evalNumber]));
         return hashMap;
@@ -55,10 +49,7 @@ public class TestCase {
 
             testCase = new Boolean[numInputs];
             for (int i = 0; i < binaryString.length(); i++) {
-                if (binaryString.charAt(i) == '0')
-                    testCase[i] = false;
-                else
-                    testCase[i] = true;
+                testCase[i] = binaryString.charAt(i) != '0';
             }
             retValue[x] = testCase;
         }
