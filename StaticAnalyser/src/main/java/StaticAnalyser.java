@@ -7,7 +7,7 @@ public class StaticAnalyser {
 
         test1();
 
-//        test2();
+        test2();
     }
 
     public static void test1() throws ScriptException {
@@ -52,7 +52,7 @@ public class StaticAnalyser {
         System.out.println(Predicate.evalTree(p11));
         System.out.println(p11);
 
-//        p11.correlatedMCDC();
+        p11.correlatedMCDC();
         p11.restrictedMCDC();
 
     }
@@ -64,20 +64,29 @@ public class StaticAnalyser {
         values.put("side2", 2);
         values.put("side3", 3);
 
-        // Set up the conditions and disjuncts
+//        // Set up the conditions and disjuncts
+//        (c1 && (c2 || c3)) && (c4 || c5)
         Condition c1 = new Condition("side1 + side2 > side3", values);
-        Predicate d1 = new Predicate(c1);
-        Condition c2 = new Condition("side1 == side2 || side2 == side3", values);
-        Predicate d2 = new Predicate(c2);
-        Condition c3 = new Condition("side1 != side2 || side2 != side3", values);
-        Predicate d3 = new Predicate(c3);
+        Predicate p1 = new Predicate(c1);
+        Condition c2 = new Condition("side1 == side2", values);
+        Predicate p2 = new Predicate(c2);
+        Condition c3 = new Condition("side2 == side3", values);
+        Predicate p3 = new Predicate(c3);
+        Condition c4 = new Condition("side1 != side2", values);
+        Predicate p4 = new Predicate(c4);
+        Condition c5 = new Condition("side2 != side3", values);
+        Predicate p5 = new Predicate(c5);
 
-        // Setup the main disjuncts
-        Predicate d4 = new Predicate(d1, "&&", d2);
-        Predicate d5 = new Predicate(d4, "&&", d3);
+        Predicate p6 = new Predicate(p2, "||", p3);
+        Predicate p7 = new Predicate(p4, "||", p5);
+        Predicate p8 = new Predicate(p1, "&&", p6);
+        Predicate p9 = new Predicate(p8, "&&", p7);
 
-        System.out.println(Predicate.evalTree(d5));
-        System.out.println(d5);
+//        System.out.println(Predicate.evalTree(p9));
+//        System.out.println(p9);
+        p9.restrictedMCDC();
+        p9.correlatedMCDC();
+
     }
 
 

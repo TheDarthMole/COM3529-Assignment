@@ -13,14 +13,23 @@ public class TestCase {
         this.values = values;
     }
 
+    /**
+     * Evaluate the expression based on some inputs
+     * @param inputs the inputs for the expression
+     * @return The evaluated expression boolean
+     * @throws ScriptException If there is an error with the input expression
+     */
     public Boolean evaluateTestCase(Boolean[] inputs) throws ScriptException {
         String evalString = this.pred.toString();
         Condition[] uniqCond = this.pred.getUniqConditions();
 
-
         // Replace the conditions with their 'answers' to the conditions
         for (int i = 0; i < inputs.length; i++) {
-            evalString = evalString.replaceAll(uniqCond[i].toString(), inputs[i].toString());
+            Condition[] duplicates = this.pred.getDuplicateExpressions(uniqCond[i]);
+            // After getting the duplicates, we replace the duplicates and
+            // their 'equivalent' values with the input values
+            for (Condition cond : duplicates)
+                evalString = evalString.replace(cond.toString().strip(), inputs[i].toString());
         }
 
         // Evaluate the expression using the javascript engine, ez
@@ -30,12 +39,11 @@ public class TestCase {
         return (boolean) engine.eval(evalString);
     }
 
-    public HashMap<Boolean[], Boolean> getNextEvaluatedCondition(HashMap<Boolean[], Boolean> hashMap, int conditionLength, int evalNumber) throws ScriptException {
-        Boolean[][] comboInputs = generateComboInputs(conditionLength);
-        hashMap.put(comboInputs[evalNumber], evaluateTestCase(comboInputs[evalNumber]));
-        return hashMap;
-    }
-
+    /**
+     * Generate a list of inputs for MCDC for a function
+     * @param numInputs The number of inputs to enumerate
+     * @return The full set of inputs of size numInputs,
+     */
     public static Boolean[][] generateComboInputs(int numInputs) {
         int numGenerated = (int) Math.pow(2, numInputs) - 1;
         Boolean[][] retValue = new Boolean[numGenerated + 1][numInputs];

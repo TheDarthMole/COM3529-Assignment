@@ -179,6 +179,22 @@ public class Predicate {
         return correlatedMCDCSet;
     }
 
+    public Condition[] getDuplicateExpressions(Condition cond) {
+        ArrayList<Condition> duplicates = new ArrayList<>();
+
+        Condition[] conditions = this.getConditions(new Condition[]{});
+
+        for (Condition possDup : conditions) {
+            if (Condition.isEquivalent(possDup, cond))
+                duplicates.add(possDup);
+        }
+        Condition[] retValue = new Condition[duplicates.size()];
+        for (int i = 0; i < duplicates.size(); i++)
+            retValue[i] = duplicates.get(i);
+
+        return retValue;
+    }
+
     /**
      * Evaluates an expression if it's not already been evaluated
      * @param testCase The test case to use for evaluation
@@ -226,8 +242,6 @@ public class Predicate {
                 majorFlippedInput = input.clone();
                 majorFlippedInput[i] = !majorFlippedInput[i];
 
-                System.out.println(Arrays.toString(majorFlippedInput) + Arrays.toString(input));
-
                 tempOutput1 = evaluatedOrEval(testCase, input, evaluatedExpressions);
                 tempOutput2 = evaluatedOrEval(testCase, majorFlippedInput, evaluatedExpressions);
 
@@ -237,6 +251,15 @@ public class Predicate {
                     restrictedMCDCSet.put(majorFlippedInput, tempOutput2);
                 }
             }
+        }
+
+        System.out.println(this);
+        System.out.println("Unique conditions, equivalences have been found");
+
+        int counter = 0;
+        for (Condition cond : uniqConditions) {
+            counter++;
+            System.out.println("Condition " + counter + ": (" + cond + ")");
         }
 
         System.out.println("Restricted MCDC output: ");

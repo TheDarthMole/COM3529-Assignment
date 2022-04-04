@@ -32,8 +32,6 @@ public class Condition {
 
         String evalString = this.substitute();
 
-//        System.out.printf("%s : %b\n", evalString, retValue);
-
         return (boolean) engine.eval(evalString);
     }
 
@@ -46,7 +44,9 @@ public class Condition {
         String evalString = this.expression;
 
         for (String key : this.varIndex.keySet())
-            evalString = evalString.replaceAll(key, String.valueOf(this.varIndex.get(key)));
+            evalString = evalString.replace(key, String.valueOf(this.varIndex.get(key)));
+
+//        System.out.println(evalString);
 
         return evalString;
     }
