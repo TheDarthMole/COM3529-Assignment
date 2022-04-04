@@ -82,8 +82,8 @@ public class Predicate {
             case "!":
                 return !left;
             default:
-                // Theoretically not accessible
                 return root.cond.evaluate();
+            // Theoretically not accessible
         }
     }
 
@@ -340,6 +340,31 @@ public class Predicate {
             return tempRight;
         else
             return tempLeft;
+    }
+
+    /**
+     * An UNFINISHED function to generate the inputs needed to satisfy MC/DC, can be used for Correlated
+     * and Restricted MC/DC
+     * @param requirements The MC/DC boolean inputs and their outputs
+     * @return
+     * @throws ScriptException
+     */
+    public HashMap<String, Integer> generateInputsForMCDC(HashMap<Boolean[], Boolean> requirements) throws ScriptException {
+        Condition[] uniqConditions = this.getUniqConditions();
+        HashMap<String, Integer> values = uniqConditions[0].varIndex;
+        int counter;
+
+        boolean fullCorrectEval = false;
+
+        while (! fullCorrectEval) {
+            counter = 0;
+            for (Boolean[] input : requirements.keySet()) {
+                if (uniqConditions[0].evaluate(values) != input[counter]) {
+
+                }
+            }
+        }
+        return values;
     }
 
     /**

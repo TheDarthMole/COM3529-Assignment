@@ -7,6 +7,8 @@ public class StaticAnalyser {
 
         test1();
 
+        System.out.println("=====================");
+
         test2();
     }
 
@@ -84,8 +86,8 @@ public class StaticAnalyser {
 
 //        System.out.println(Predicate.evalTree(p9));
 //        System.out.println(p9);
-        p9.restrictedMCDC();
         p9.correlatedMCDC();
+        p9.restrictedMCDC();
 
     }
 

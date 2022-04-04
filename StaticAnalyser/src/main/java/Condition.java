@@ -25,28 +25,39 @@ public class Condition {
      * @return returns true or false depending on the expression with the values substituted in
      * @throws ScriptException
      */
-    public boolean evaluate() throws ScriptException {
+    public boolean evaluate(HashMap<String, Integer> values) throws ScriptException {
         // Set up the evaluation manager
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
-        String evalString = this.substitute();
+        String evalString = this.substitute(values);
 
         return (boolean) engine.eval(evalString);
     }
 
+    public boolean evaluate() throws ScriptException {
+        return this.evaluate(this.varIndex);
+    }
+
     /**
-     * Substitute the values into the equation
+     * Substitute the values from the condition into the equation
      *
      * @return The expression with the values substituted in
      */
     public String substitute() {
+        return this.substitute(this.varIndex);
+    }
+
+    /**
+     * Substitute the values into the equation
+     * @param values The values to substitute
+     * @return
+     */
+    public String substitute(HashMap<String, Integer> values) {
         String evalString = this.expression;
 
-        for (String key : this.varIndex.keySet())
+        for (String key : values.keySet())
             evalString = evalString.replace(key, String.valueOf(this.varIndex.get(key)));
-
-//        System.out.println(evalString);
 
         return evalString;
     }
