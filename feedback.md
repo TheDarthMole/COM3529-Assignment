@@ -104,6 +104,6 @@
 
 You appear to have understood the requirements of the data structure and how to generate MCDC requirements, but you've only completed part 1 of the assignment. Given that you've not attempted part 2, your evaluation is inevitably limited.
 
-**Mark:** 53; after 1 day late = 50.4
+**Final Mark:** 53
 
 Please note that marks are unconfirmed until the spring module board.
